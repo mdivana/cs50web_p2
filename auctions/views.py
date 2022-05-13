@@ -8,7 +8,10 @@ from .models import User, Listings, Bids, Comments
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    context = {
+        'listings': Listings.objects.all()
+    }
+    return render(request, "auctions/index.html", context)
 
 
 def login_view(request):
