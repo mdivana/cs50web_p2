@@ -3,13 +3,15 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Listings, Bids, Comments
+from .models import User, Listing, Bid, Comment
 
 
 def index(request):
     context = {
-        'listings': Listings.objects.all()
+        'listings': Listing.objects.all()
     }
     return render(request, "auctions/index.html", context)
 
@@ -64,3 +66,12 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+        
+class ListingCreateView(LoginRequiredMixin, CreateView):
+    model = Listing
+    fields = ['title', 'description', 'image', 'category']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
