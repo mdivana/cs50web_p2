@@ -2,3 +2,4 @@
 /auctions/migrations
 /commerce/__pycache__
 db.sqlite3
+/media
