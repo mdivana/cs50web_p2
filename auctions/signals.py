@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Bid, Listing
 
-@receiver(post_save, sender=Listing)
+@receiver(post_save, sender=Bid)
 def create_bid(sender, instance, created, **kwargs):
     if created:
-        Bid.objects.create(bid=instance)
+        Bid.objects.create(Bid=instance)
