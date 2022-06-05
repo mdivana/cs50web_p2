@@ -75,3 +75,6 @@ class ListingCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+class ListingDetailView(LoginRequiredMixin, DetailView):
+    model = Listing

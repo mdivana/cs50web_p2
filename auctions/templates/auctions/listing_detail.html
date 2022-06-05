@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+<article class="media content-section">
+    <div class="article-metadata" style="border-bottom: none;">
+        <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
+        
+        <div>
+            <h2 class="article-title">{{ object.title }}</h2>
+            <p class="article-content">{{ object.description }}</p>
+            <img src="{{ object.image.url }}">
+        </div>
+    </div>
+</article>
+{% endblock %}
