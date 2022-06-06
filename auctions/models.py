@@ -17,9 +17,10 @@ class Listing(models.Model):
     description = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
-    defaultbid = models.FloatField(max_length=10, default=0, blank=True)
+    startingbid = models.FloatField(max_length=10, default=0, blank=True)
     image = models.ImageField(upload_to='listing_pics')
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchlisting")
+    availibility = models.BooleanField(default=True)
     category = models.CharField(max_length=80, null=True, blank=True)
 
     def __str__(self):

@@ -70,7 +70,7 @@ def register(request):
         
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    fields = ['title', 'description', 'image', 'category']
+    fields = ['title', 'description', 'startingbid', 'image', 'category']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
