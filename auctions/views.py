@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Listing
 
 from .models import User, Listing, Bid, Comment
 
@@ -70,7 +71,7 @@ def register(request):
         
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    fields = ['title', 'description', 'startingbid', 'image', 'category']
+    fields = ['title', 'description', 'startingbid', 'image_url', 'category']
 
     def form_valid(self, form):
         form.instance.author = self.request.user

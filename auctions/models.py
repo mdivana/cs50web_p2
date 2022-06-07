@@ -18,23 +18,13 @@ class Listing(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     startingbid = models.FloatField(max_length=10, default=0, blank=True)
-    image = models.ImageField(upload_to='listing_pics')
+    image_url = models.URLField(verbose_name="Image URL", blank=True)
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchlisting")
     availibility = models.BooleanField(default=True)
     category = models.CharField(max_length=80, null=True, blank=True)
 
     def __str__(self):
         return self.title
-    
-    def save(self, *agrs, **kwargs):
-        super(Listing, self).save(*agrs, **kwargs)
-
-        img = Image.open(self.image.path)
-
-        if img.height > 600 or img.width > 600:
-            output_size = (600, 600)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
 
     def get_absolute_url(self):
         return reverse('listing-detail', kwargs={'pk': self.pk})
