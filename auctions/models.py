@@ -19,7 +19,6 @@ class Listing(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     startingbid = models.FloatField(max_length=10, default=0, blank=True)
     image_url = models.URLField(verbose_name="Image URL", blank=True)
-    watchlist = models.ManyToManyField(User, blank=True, related_name="watchlisting")
     availibility = models.BooleanField(default=True)
     category = models.CharField(max_length=80, null=True, blank=True)
 
@@ -41,3 +40,9 @@ class Comment(models.Model):
     text = models.CharField(max_length=500)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+class Watchlist(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    added = models.BooleanField(related_name="watchlist")

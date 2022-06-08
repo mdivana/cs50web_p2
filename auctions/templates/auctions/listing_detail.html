@@ -5,7 +5,20 @@
 <article class="media content-section">
     <div class="article-metadata" style="border-bottom: none;">
         <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
-        
+        {% if user.is_authenticated and user.id != auction.seller.id %}
+            <form action="{% url 'auctions:watchlist' %}" method="POST">
+                {% csrf_token %}
+                {% if watchlist %}
+                    <input type="submit" class="btn btn-danger" value="Remove from watchlist">
+                    <input type="hidden" name="on_watchlist" value="True">
+                {% else %}
+                    <input type="submit" class="btn btn-success" value="Add to watchlist">
+                    <input type="hidden" name="on_watchlist" value="False">
+                {% endif %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <input type="hidden" name="auction_id" value="{{ auction.id }}">
+            </form>
+        {% endif %}
         <div>
             <h2 class="article-title">{{ object.title }}</h2>
             <img src="{{ object.image_url }}" alt="Listing Image" width="500" height="600">
