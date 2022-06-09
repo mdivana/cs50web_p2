@@ -10,6 +10,12 @@ class User(AbstractUser):
     email = models.EmailField(("email address"), blank=True, primary_key=True)
     pass
 
+class Categories(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    categories = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.name
 
 class Listing(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -20,7 +26,8 @@ class Listing(models.Model):
     startingbid = models.FloatField(max_length=10, default=0, blank=True)
     image_url = models.URLField(verbose_name="Image URL", blank=True)
     availibility = models.BooleanField(default=True)
-    category = models.CharField(max_length=80, null=True, blank=True)
+    category = models.ForeignKey(Categories, max_length=80, null=True, blank=True)
+    watchlist = models.ManyToManyField(User, default=False, related_name="watchlist")
 
     def __str__(self):
         return self.title

@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Listing
@@ -68,7 +69,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-        
+@login_required 
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
     fields = ['title', 'description', 'startingbid', 'image_url', 'category']
@@ -79,3 +80,5 @@ class ListingCreateView(LoginRequiredMixin, CreateView):
 
 class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
+
+
