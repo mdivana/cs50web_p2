@@ -3,7 +3,6 @@ from django.db import models
 from django.shortcuts import render
 from django.utils import timezone
 from django.urls import reverse
-from PIL import Image
 
 
 class User(AbstractUser):
@@ -13,6 +12,9 @@ class User(AbstractUser):
 class Categories(models.Model):
     id = models.BigAutoField(primary_key=True)
     categories = models.CharField(max_length=25)
+
+    class Meta:
+        ordering = ('name')
 
     def __str__(self):
         return self.name
@@ -27,7 +29,6 @@ class Listing(models.Model):
     image_url = models.URLField(verbose_name="Image URL", blank=True)
     availibility = models.BooleanField(default=True)
     category = models.ForeignKey(Categories, max_length=80, null=True, blank=True)
-    watchlist = models.ManyToManyField(User, default=False, related_name="watchlist")
 
     def __str__(self):
         return self.title
@@ -47,6 +48,12 @@ class Comment(models.Model):
     text = models.CharField(max_length=500)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('-time',)
+
+    def __str__(self):
+        return f"{self.author} commented: {self.text}"
 
 class Watchlist(models.Model):
     id = models.BigAutoField(primary_key=True)
