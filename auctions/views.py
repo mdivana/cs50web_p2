@@ -81,7 +81,7 @@ class ListingCreateView(LoginRequiredMixin, CreateView):
 class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
 
-
+@login_required
 def watchlist(request):
     return render(request, "auctions/auction_list.html", {
         "auctions" : request.user.watchlist.all(),
