@@ -1,4 +1,4 @@
-from django.contrib.auth import is_authenticated, authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -69,7 +69,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-@login_required 
+
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
     fields = ['title', 'description', 'startingbid', 'image_url', 'category']
@@ -78,12 +78,14 @@ class ListingCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
 class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
 
+
 @login_required
-def watchlist(request):
-    return render(request, "auctions/auction_list.html", {
-        "auctions" : request.user.watchlist.all(),
+def watchlist_view(request):
+    return render(request, "auctions/list_page.html", {
+        "auctions" : User.listing_set.all(),
         "title" : "Watchlist"
     })
