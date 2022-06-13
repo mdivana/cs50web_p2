@@ -9,55 +9,59 @@ class User(AbstractUser):
     email = models.EmailField(("email address"), blank=True, primary_key=True)
     pass
 
-class Categories(models.Model):
-    id = models.BigAutoField(primary_key=True)
-
-    category_list = (
-        'Antiques'
-        'Art',
-        'Baby',
-        'Books',
-        'Business & Industrial',
-        'Cameras & Photo',
-        'Cell Phones & Accessories',
-        'Clothing, Shoes & Accessories',
-        'Coins & Paper Money',
-        'Collectibles',
-        'Computers/Tablets & Networking',
-        'Consumer Electronics',
-        'Crafts',
-        'Dools & Bears',
-        'Entertainment Memorabilia',
-        'Home & Garden',
-        'Motors',
-        'Pet Supplies',
-        'Sporting Goods',
-        'Sports Mem, Cards & Fan Shop',
-        'Toys & Hobbies',
-        'Other'
-    )
-
-    category = models.CharField(max_length=25)
-
-    class Meta:
-        ordering = ('category',)
-
-    def __str__(self):
-        return self.name
-
 class Listing(models.Model):
+
+    category_list = [
+        ('Antiques', 'Antiques'),
+        ('Art', 'Art'),
+        ('Baby', 'Baby'),
+        ('Books', 'Books'),
+        ('Business & Industrial', 'Business & Industrial'),
+        ('Cameras & Photo', 'Cameras & Photo'),
+        ('Cell Phones & Accessories', 'Cell Phones & Accessories'),
+        ('Clothing, Shoes & Accessories', 'Clothing, Shoes & Accessories'),
+        ('Coins & Paper Money', 'Coins & Paper Money'),
+        ('Collectibles', 'Collectibles'),
+        ('Computers/Tablets & Networking', 'Computers/Tablets & Networking'),
+        ('Consumer Electronics', 'Consumer Electronics'),
+        ('Crafts', 'Crafts'),
+        ('Dools & Bears', 'Dools & Bears'),
+        ('Entertainment Memorabilia', 'Entertainment Memorabilia'),
+        ('Gift Cards & Coupons', 'Gift Cards & Coupons'),
+        ('Health & Beauty', 'Health & Beauty'),
+        ('Home & Garden', 'Home & Garden'),
+        ('Jewelry & Watches', 'Jewelry & Watches'),
+        ('Music', 'Music'),
+        ('Musical Instruments & Gear', 'Musical Instruments & Gear'),
+        ('Pet Supplies', 'Pet Supplies'),
+        ('Pottery & Glass', 'Pottery & Glass'),
+        ('Real Estate', 'Real Estate'),
+        ('Specialty Services', 'Specialty Services'),
+        ('Sporting Goods', 'Sporting Goods'),
+        ('Sports Mem, Cards & Fan Shop', 'Sports Mem, Cards & Fan Shop'),
+        ('Stamps', 'Stamps'),
+        ('Tickets & Experiences', 'Tickets & Experiences'),
+        ('Toys & Hobbies', 'Toys & Hobbies'),
+        ('Travel', 'Travel'),
+        ('Video Games & Console', 'Video Games & Console'),
+        ('Everything Else', 'Everything Else'),
+    ]
+
     id = models.BigAutoField(primary_key=True)
     title =  models.CharField(max_length=50)
     description = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
-    startingbid = models.FloatField(max_length=10, default=0, blank=True)
-    image_url = models.URLField(verbose_name="Image URL", blank=True)
+    startingbid = models.FloatField(max_length=10, default=0)
+    image_url = models.URLField(verbose_name="Image URL")
     availibility = models.BooleanField(default=True)
-    category = models.ForeignKey(Categories, on_delete=models.SET_NULL, max_length=80, null=True, blank=True)
+    category = models.CharField(max_length=30, choices=category_list)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ('category',)
 
     def get_absolute_url(self):
         return reverse('listing-detail', kwargs={'pk': self.pk})
