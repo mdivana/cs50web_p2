@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Listing
 
 from .models import User, Listing, Bid, Comment
+from .forms import BidForm
 
 
 def index(request):
@@ -72,7 +73,7 @@ def register(request):
 
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    fields = ['title', 'description', 'startingbid', 'image_url', 'category']
+    fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -83,9 +84,20 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
 
 
-@login_required
+@login_required(login_url='/login')
 def watchlist_view(request):
     return render(request, "auctions/list_page.html", {
         "auctions" : User.listing_set.all(),
         "title" : "Watchlist"
     })
+
+
+def auction_bid(request, id):
+    if request.method == "POST":
+        bid_form = BidForm
+        if bid_form.is_valid():
+            listing = Listing.objects.get(id=id)
+            user = request.user
+            new_bid = bid_form.save(commit=False)
+            current_bids = Bid.objects.filter(listing=listing)
+            
