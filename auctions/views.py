@@ -1,3 +1,4 @@
+from curses.ascii import HT
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -92,12 +93,20 @@ def watchlist_view(request):
     })
 
 
-def auction_bid(request, id):
+def add_bid(request, id):
     if request.method == "POST":
-        bid_form = BidForm
+        bid_form = BidForm()
         if bid_form.is_valid():
             listing = Listing.objects.get(id=id)
             user = request.user
             new_bid = bid_form.save(commit=False)
             current_bids = Bid.objects.filter(listing=listing)
-            
+            highest_bid = all(new_bid.amount > current_bid.amount for current_bid in current_bids)
+            valid_bid = new_bid.amount >= listing.start_bid
+
+            if highest_bid and valid_bid:
+                new_bid.listing = listing
+                new_bid.user = user
+                new_bid.save
+    url = reverse('listing-detail', kwargs={'pk': id})
+    return HttpResponseRedirect(url)
