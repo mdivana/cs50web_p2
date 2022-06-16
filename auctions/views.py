@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Listing
 
 from .models import User, Listing, Bid, Comment
 from .forms import BidForm
@@ -74,7 +73,8 @@ def register(request):
 
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category']
+    model = Bid
+    fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category', 'bid']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -93,20 +93,25 @@ def watchlist_view(request):
     })
 
 
-def add_bid(request, id):
+def add_bid(request, pk, *args, **kwargs):
     if request.method == "POST":
         bid_form = BidForm()
-        if bid_form.is_valid():
-            listing = Listing.objects.get(id=id)
-            user = request.user
-            new_bid = bid_form.save(commit=False)
-            current_bids = Bid.objects.filter(listing=listing)
-            highest_bid = all(new_bid.amount > current_bid.amount for current_bid in current_bids)
-            valid_bid = new_bid.amount >= listing.start_bid
-
-            if highest_bid and valid_bid:
-                new_bid.listing = listing
-                new_bid.user = user
-                new_bid.save
-    url = reverse('listing-detail', kwargs={'pk': id})
+        listing = Listing.objects.get(id=pk)
+        user = request.user
+        new_bid = bid_form.save(commit=False)
+        obj = Bid.objects.filter(listing=listing).latest('bid')
+        current_bid = Bid._meta.get_field('bid').value_from_object(obj)
+        print(bid_form)
+        print(current_bid)
+        if_higher = new_bid.bid > current_bid
+        print(if_higher)
+        if_valid = new_bid.bid >= listing.startingbid
+        print(if_valid)
+        if if_higher and if_valid:
+            new_bid.listing = listing
+            new_bid.user = user
+            new_bid.save()
+    else:
+        bid_form = BidForm()
+    url = reverse('listing-detail', kwargs={'pk': pk})
     return HttpResponseRedirect(url)

@@ -6,8 +6,8 @@
 <article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px;">
     <div class="article-metadata" style="border-bottom: none;">
         <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
-        {% if user.is_authenticated and user.id != auction.seller.id %}
-            <form action="{% url 'auctions:watchlist' %}" method="POST">
+        {% if user.is_authenticated and user.id != listing.seller.id %}
+            <form action="{% url 'listing:watchlist' %}" method="POST">
                 {% csrf_token %}
                 {% if watchlist %}
                     <input type="submit" class="btn btn-danger" value="Remove from watchlist">
@@ -17,7 +17,7 @@
                     <input type="hidden" name="on_watchlist" value="False">
                 {% endif %}
                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                <input type="hidden" name="auction_id" value="{{ auction.id }}">
+                <input type="hidden" name="auction_id" value="{{ listing.id }}">
             </form>
         {% endif %}
         <div>
@@ -26,19 +26,17 @@
             <p class="article-content">{{ object.description }}</p>
             <p class="article-content">{{ object.category }}</p>
 
+            {% if object.Bid == none %}
+                $ {{ object.startingbid }}
+            {% else %}
+                $ {{ object.bid }}
+            {% endif %}
 
             {% if request.user.is_authenticated and not ended %}
-                <form method="POST" action="{% url 'add_bid' listing.id %}" class="form-inline">
+                <form method="POST" action="{% url 'add_bid' object.pk %}" class="form-inline">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <label for="Bid">Bid:</label><br>
-                        {% if object.Bid == none %}
-                            $ <input type="number" id="Bid" name="Bid" value="{{ object.startingbid }}"><br>
-                        {% else %}
-                            $ <input type="number" id="Bid" name="Bid" value="{{ object.Bid }}"><br>
-                        {% endif %}
-                        <input class="btn btn-primary" type="submit" value="Place Bid"/>
-                    </div>
+                    {{ form }}
+                    <input class="btn btn-primary" type="submit" value="Place Bid"/>
                 </form>
             {% endif %}
 

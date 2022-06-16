@@ -97,6 +97,9 @@ class Bid(models.Model):
     bid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid")
 
+    class Meta:
+        get_latest_by = 'rating'
+
 
 class Comment(models.Model):
     id = models.BigAutoField(primary_key=True)
