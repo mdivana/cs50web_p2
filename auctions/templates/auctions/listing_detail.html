@@ -33,9 +33,9 @@
             {% endif %}
 
             {% if request.user.is_authenticated and not ended %}
-                <form method="POST" action="{% url 'add_bid' object.pk %}" class="form-inline">
+                <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ bid_form.bid }}
                     <input class="btn btn-primary" type="submit" value="Place Bid"/>
                 </form>
             {% endif %}

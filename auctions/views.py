@@ -93,7 +93,7 @@ def watchlist_view(request):
     })
 
 
-def add_bid(request, pk, *args, **kwargs):
+def listing_bid(request, pk, *args, **kwargs):
     if request.method == "POST":
         bid_form = BidForm()
         listing = Listing.objects.get(id=pk)
@@ -113,5 +113,4 @@ def add_bid(request, pk, *args, **kwargs):
             new_bid.save()
     else:
         bid_form = BidForm()
-    url = reverse('listing-detail', kwargs={'pk': pk})
-    return HttpResponseRedirect(url)
+    return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
