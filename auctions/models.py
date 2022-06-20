@@ -66,7 +66,7 @@ class Listing(models.Model):
     date_end = models.DateTimeField()
     closed = models.BooleanField(default=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
-    startingbid = models.FloatField(max_length=10, default=0)
+    startingbid = models.IntegerField(default=0)
     image_url = models.URLField(verbose_name="Image URL")
     availibility = models.BooleanField(default=True)
     category = models.CharField(max_length=30, choices=category_list)
@@ -94,7 +94,7 @@ class Listing(models.Model):
 class Bid(models.Model):
     id = models.BigAutoField(primary_key=True)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, default=None, related_name="bid")
-    bid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    bid = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid")
 
     class Meta:

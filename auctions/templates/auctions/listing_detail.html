@@ -26,17 +26,19 @@
             <p class="article-content">{{ object.description }}</p>
             <p class="article-content">{{ object.category }}</p>
 
-            {% if object.Bid == none %}
+            {% if object.bid == none %}
                 $ {{ object.startingbid }}
             {% else %}
-                $ {{ object.bid }}
+                $ {{ object.last.bid }}
             {% endif %}
 
             {% if request.user.is_authenticated and not ended %}
                 <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                     {% csrf_token %}
-                    {{ bid_form.bid }}
-                    <input class="btn btn-primary" type="submit" value="Place Bid"/>
+                    <div>
+                        {{ bid_form }}
+                        <input class="btn btn-primary" type="submit" value="Place Bid"/>
+                    </div>
                 </form>
             {% endif %}
 
