@@ -29,14 +29,14 @@
             {% if object.bid == none %}
                 $ {{ object.startingbid }}
             {% else %}
-                $ {{ object.last.bid }}
+                $ {{ listing.bid.last.bid }}
             {% endif %}
 
             {% if request.user.is_authenticated and not ended %}
                 <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                     {% csrf_token %}
                     <div>
-                        {{ bid_form }}
+                        {{ bid_form|crispy }}
                         <input class="btn btn-primary" type="submit" value="Place Bid"/>
                     </div>
                 </form>

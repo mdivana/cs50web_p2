@@ -73,7 +73,6 @@ def register(request):
 
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    model = Bid
     fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category', 'bid']
 
     def form_valid(self, form):
@@ -85,6 +84,7 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
     extra_context = {}
 
+    extra_context["Bid"] = Bid
     extra_context["bid_form"] = BidForm()
 
 
@@ -98,22 +98,16 @@ def watchlist_view(request):
 
 def listing_bid(request, pk, *args, **kwargs):
     bid_form = BidForm(request.POST or None)
-    print(bid_form)
     if bid_form.is_valid():
         listing = Listing.objects.get(id=pk)
         user = request.user
         new_bid = bid_form.save(commit=False)
         obj = Bid.objects.filter(listing=listing).latest('bid')
         current_bid = Bid._meta.get_field('bid').value_from_object(obj)
-        print(new_bid.bid)
-        print(current_bid)
         if_higher = new_bid.bid > current_bid
-        print(if_higher)
         if_valid = new_bid.bid >= listing.startingbid
-        print(if_valid)
         if if_higher and if_valid:
             new_bid.listing = listing
             new_bid.user = user
-            print(new_bid)
             new_bid.save()
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
