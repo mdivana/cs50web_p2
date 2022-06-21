@@ -102,12 +102,19 @@ def listing_bid(request, pk, *args, **kwargs):
         listing = Listing.objects.get(id=pk)
         user = request.user
         new_bid = bid_form.save(commit=False)
-        obj = Bid.objects.filter(listing=listing).latest('bid')
-        current_bid = Bid._meta.get_field('bid').value_from_object(obj)
-        if_higher = new_bid.bid > current_bid
-        if_valid = new_bid.bid >= listing.startingbid
-        if if_higher and if_valid:
-            new_bid.listing = listing
-            new_bid.user = user
-            new_bid.save()
+        try:
+            obj = Bid.objects.filter(listing=listing).latest('bid')
+            current_bid = Bid._meta.get_field('bid').value_from_object(obj)
+            if_higher = new_bid.bid > current_bid
+            if_valid = new_bid.bid >= listing.startingbid
+            if if_higher and if_valid:
+                new_bid.listing = listing
+                new_bid.user = user
+                new_bid.save()
+        except:
+            if_valid = new_bid.bid >= listing.startingbid
+            if if_valid:
+                new_bid.listing = listing
+                new_bid.user = user
+                new_bid.save()
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
