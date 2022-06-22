@@ -10,4 +10,5 @@ urlpatterns = [
     path('listing/new/', views.ListingCreateView.as_view(), name='listing-create'),
     path('listing/<int:pk>/', views.ListingDetailView.as_view() , name='listing-detail'),
     path('listing/<int:pk>/bid', views.listing_bid, name='listing-bid'),
+    path('listing/<int:pk>/comment', views.listing_comment, name='listing-comment'),
 ]

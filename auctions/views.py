@@ -9,7 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Listing, Bid, Comment
-from .forms import BidForm
+from .forms import BidForm, CommentForm
 
 
 def index(request):
@@ -84,8 +84,10 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
     extra_context = {}
 
+    extra_context["Comment"] = Comment
     extra_context["Bid"] = Bid
     extra_context["bid_form"] = BidForm()
+    extra_context["comment_form"] = CommentForm()
 
 
 @login_required(login_url='/login')
@@ -96,7 +98,7 @@ def watchlist_view(request):
     })
 
 
-def listing_bid(request, pk, *args, **kwargs):
+def listing_bid(request, pk):
     bid_form = BidForm(request.POST or None)
     if bid_form.is_valid():
         listing = Listing.objects.get(id=pk)
@@ -117,4 +119,14 @@ def listing_bid(request, pk, *args, **kwargs):
                 new_bid.listing = listing
                 new_bid.user = user
                 new_bid.save()
+    return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
+
+
+def listing_comment(request, pk):
+    comment_form = CommentForm(request.POST or None)
+    if comment_form.is_valid():
+        new_comment = comment_form.save(commit=False)
+        new_comment.listing = Listing.objects.get(id=pk)
+        new_comment.user = request.user
+        new_comment.save()
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))

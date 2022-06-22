@@ -32,7 +32,7 @@
                 $ {{ listing.bid.last.bid }}
             {% endif %}
 
-            {% if request.user.is_authenticated and not ended %}
+            {% if request.user.is_authenticated and not ended and user.id != listing.seller.id%}
                 <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                     {% csrf_token %}
                     <div>
@@ -41,6 +41,18 @@
                     </div>
                 </form>
             {% endif %}
+
+            <div>
+                {% if request.user.is_authenticated and not ended %}
+                    <form method="POST" action="{% url 'listing-comment' object.pk %}" class="form-inline">
+                        {% csrf_token %}
+                        <div>
+                            {{ comment_form|crispy }}
+                            <input class="btn btn-primary" type="submit" value="Comment"/>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
 
         </div>
     </div>

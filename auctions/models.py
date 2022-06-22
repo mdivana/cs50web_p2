@@ -105,8 +105,8 @@ class Comment(models.Model):
     id = models.BigAutoField(primary_key=True)
     text = models.CharField(max_length=500)
     time = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comment")
 
     class Meta:
         ordering = ('-time',)
