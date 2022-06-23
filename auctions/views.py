@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Listing, Bid, Comment
@@ -73,7 +73,7 @@ def register(request):
 
 class ListingCreateView(LoginRequiredMixin, CreateView):
     model = Listing
-    fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category', 'bid']
+    fields = ['title', 'description', 'duration', 'startingbid', 'image_url', 'category']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -84,10 +84,10 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
     model = Listing
     extra_context = {}
 
-    extra_context["Comment"] = Comment
     extra_context["Bid"] = Bid
     extra_context["bid_form"] = BidForm()
     extra_context["comment_form"] = CommentForm()
+    extra_context["comments"] = Comment.objects.all()
 
 
 @login_required(login_url='/login')
@@ -129,4 +129,8 @@ def listing_comment(request, pk):
         new_comment.listing = Listing.objects.get(id=pk)
         new_comment.user = request.user
         new_comment.save()
+    return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
+
+
+def listing_watchlist(request, pk):
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))

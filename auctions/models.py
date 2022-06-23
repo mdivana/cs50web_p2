@@ -6,7 +6,8 @@ from django.urls import reverse
 from datetime import datetime, timedelta
 
 class User(AbstractUser):
-    email = models.EmailField(("email address"), blank=True, primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+    email = models.EmailField(("email address"), blank=False)
     pass
 
 class Listing(models.Model):
@@ -103,7 +104,7 @@ class Bid(models.Model):
 
 class Comment(models.Model):
     id = models.BigAutoField(primary_key=True)
-    text = models.CharField(max_length=500)
+    comment = models.CharField(max_length=500)
     time = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comment")
@@ -112,4 +113,4 @@ class Comment(models.Model):
         ordering = ('-time',)
 
     def __str__(self):
-        return f"{self.author} commented: {self.text}"
+        return f"{self.user} commented: {self.comment}"
