@@ -87,7 +87,11 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
     extra_context["Bid"] = Bid
     extra_context["bid_form"] = BidForm()
     extra_context["comment_form"] = CommentForm()
-    extra_context["comments"] = Comment.objects.all()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListingDetailView, self).get_context_data(*args, **kwargs)
+        context["comments"] = Comment.objects.all()
+        return context
 
 
 @login_required(login_url='/login')
