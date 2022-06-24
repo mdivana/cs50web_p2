@@ -102,6 +102,7 @@ def watchlist_view(request):
     })
 
 
+@login_required(login_url='/login')
 def listing_bid(request, pk):
     bid_form = BidForm(request.POST or None)
     if bid_form.is_valid():
@@ -126,6 +127,7 @@ def listing_bid(request, pk):
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
 
 
+@login_required(login_url='/login')
 def listing_comment(request, pk):
     comment_form = CommentForm(request.POST or None)
     if comment_form.is_valid():
@@ -136,5 +138,13 @@ def listing_comment(request, pk):
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
 
 
+@login_required(login_url='/login')
 def listing_watchlist(request, pk):
+    if request.method == "POST":
+        listing = Listing.objects.get(id=pk)
+        watchlist = request.user.watchlist
+        if listing in watchlist.all():
+            watchlist.remove(listing)
+        else:
+            watchlist.add(listing)
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))

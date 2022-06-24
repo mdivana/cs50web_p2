@@ -6,10 +6,10 @@
 <article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px;">
     <div class="article-metadata" style="border-bottom: none;">
         <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
-        {% if request.user.is_authenticated and not ended and user.id != Listing.author.id %}
+        {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
             <form action="{% url 'listing-watchlist' object.pk %}" method="POST">
                 {% csrf_token %}
-                {% if watchlist %}
+                {% if listing in request.user.watchlist.all %}
                     <input type="submit" class="btn btn-danger" value="Remove from watchlist">
                     <input type="hidden" name="watchlist" value="True">
                 {% else %}
@@ -34,7 +34,7 @@
             {% endif %}
 
             <div>
-                {% if request.user.is_authenticated and not ended and user.id != Listing.author.id %}
+                {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
                     <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                         {% csrf_token %}
                         <div>
