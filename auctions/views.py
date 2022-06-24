@@ -90,7 +90,7 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ListingDetailView, self).get_context_data(*args, **kwargs)
-        context["comments"] = Comment.objects.all()
+        context["comments"] = Comment.objects.filter(listing_id=self.kwargs['pk'])
         return context
 
 
