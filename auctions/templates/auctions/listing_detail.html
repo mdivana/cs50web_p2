@@ -47,7 +47,6 @@
 
             <div>
                 {% for comment in comments %}
-
                         <div class="article-metadata" style="border-bottom: none;">
                             <p>{{ comment.user }}</p>
                             <small class="text-muted">{{ comment.time|date:"d F, Y" }}</small>
@@ -55,7 +54,6 @@
                                 <p class="article-content">{{ comment.comment }}</p>
                             </div>
                         </div>
-
                 {% endfor %}
             </div>
 
