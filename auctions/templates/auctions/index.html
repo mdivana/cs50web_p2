@@ -3,5 +3,23 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    {% for listing in listings %}
+        <article class="media content-section" style="border-radius: 25px;">
+                <div class="article-metadata">
+                    <img class="article-img" src="{{ listing.image_url }}" style="border-radius: 5px;">
+                    <a class="mr-2 author_title">{{ listing.author }}</a>
+                    <small class="text-muted">{{ listing.date_posted|date:"d F, Y" }}</small>
+                    <div>
+                        <h2><a class="article-title" href="{% url 'listing-detail' listing.id %}">{{ listing.title }}</a></h2>
+                        <p class="article-content">{{ listing.description }}</p>
+                    </div>
+                    {% if listing.bid.last.bid == none %}
+                        $ {{ object.startingbid }}
+                    {% else %}
+                        $ {{ listing.bid.last.bid }}
+                    {% endif %}
+                </div>
+        </article>
+    {% endfor %}
+
 {% endblock %}

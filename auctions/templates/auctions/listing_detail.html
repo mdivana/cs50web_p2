@@ -3,23 +3,9 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-<article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px;">
-    <div class="article-metadata" style="border-bottom: none;">
+<article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px; padding-left: auto; padding-right: auto;">
+    <div class="article-metadata" style="border-bottom: none; margin-left: auto; margin-right: auto;">
         <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
-        {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
-            <form action="{% url 'listing-watchlist' object.pk %}" method="POST">
-                {% csrf_token %}
-                {% if listing in request.user.watchlist.all %}
-                    <input type="submit" class="btn btn-danger" value="Remove from watchlist">
-                    <input type="hidden" name="watchlist" value="True">
-                {% else %}
-                    <input type="submit" class="btn btn-success" value="Add to watchlist">
-                    <input type="hidden" name="watchlist" value="False">
-                {% endif %}
-                <input type="hidden" name="user_id" value="{{ user.id }}">
-                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-            </form>
-        {% endif %}
         <div>
             <h2 class="article-title">{{ object.title }}</h2>
             <img src="{{ object.image_url }}" alt="Listing Image" width="500" height="600">
@@ -35,10 +21,29 @@
 
             <div>
                 {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
+                    <form action="{% url 'listing-watchlist' object.pk %}" method="POST">
+                        {% csrf_token %}
+                        {% if listing in request.user.watchlist.all %}
+                            <input type="submit" class="btn btn-danger" value="Remove from watchlist">
+                            <input type="hidden" name="watchlist" value="True">
+                        {% else %}
+                            <input type="submit" class="btn btn-success" value="Add to watchlist">
+                            <input type="hidden" name="watchlist" value="False">
+                        {% endif %}
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    </form>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
                     <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
                         {% csrf_token %}
-                        <div>
+                        <fieldset class="form-group">
                             {{ bid_form|crispy }}
+                        </fieldset>
+                        <div class="form-group" style="padding-left: 10px;">
                             <input class="btn btn-primary" type="submit" value="Place Bid"/>
                         </div>
                     </form>
@@ -61,10 +66,13 @@
                 {% if request.user.is_authenticated and not ended %}
                     <form method="POST" action="{% url 'listing-comment' object.pk %}" class="form-inline">
                         {% csrf_token %}
-                        <div>
+                        <fieldset class="form-group">
                             {{ comment_form|crispy }}
+                        </fieldset>
+                        <div class="form-group" style="padding-left: 10px;">
                             <input class="btn btn-primary" type="submit" value="Comment"/>
                         </div>
+                    </form>
                     </form>
                 {% endif %}
             </div>

@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from datetime import datetime
 
 from .models import User, Listing, Bid, Comment
 from .forms import BidForm, CommentForm
@@ -14,7 +15,10 @@ from .forms import BidForm, CommentForm
 
 def index(request):
     context = {
-        'listings': Listing.objects.all()
+        'listings': Listing.objects.filter(
+            closed = False,
+            date_end__gte = datetime.now(),
+        )
     }
     return render(request, "auctions/index.html", context)
 
@@ -148,3 +152,10 @@ def listing_watchlist(request, pk):
         else:
             watchlist.add(listing)
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
+
+@login_required(login_url='/login')
+def watchlist_view(request):
+    return render(request, "auctions/watchlist.html", {
+        "listings" : request.user.watchlist.all(),
+        "title" : "Watchlist"
+    })
