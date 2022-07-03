@@ -10,7 +10,7 @@
             <h2 class="article-title">{{ object.title }}</h2>
             <img src="{{ object.image_url }}" alt="Listing Image" width="500" height="600">
             <p class="article-content">{{ object.description }}</p>
-            <p class="article-content">{{ object.category }}</p>
+            <p><a class="article-content" href="{% url 'category' object.category %}">{{ object.category }}</a></p>
             
             
             {% if listing.bid.last.bid == none %}

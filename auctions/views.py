@@ -18,7 +18,8 @@ def index(request):
         'listings': Listing.objects.filter(
             closed = False,
             date_end__gte = datetime.now(),
-        )
+        ),
+        'title': 'Active Listings'
     }
     return render(request, "auctions/index.html", context)
 
@@ -99,14 +100,6 @@ class ListingDetailView(LoginRequiredMixin, DetailView):
 
 
 @login_required(login_url='/login')
-def watchlist_view(request):
-    return render(request, "auctions/list_page.html", {
-        "auctions" : User.listing_set.all(),
-        "title" : "Watchlist"
-    })
-
-
-@login_required(login_url='/login')
 def listing_bid(request, pk):
     bid_form = BidForm(request.POST or None)
     if bid_form.is_valid():
@@ -153,9 +146,30 @@ def listing_watchlist(request, pk):
             watchlist.add(listing)
     return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))
 
+
 @login_required(login_url='/login')
 def watchlist_view(request):
-    return render(request, "auctions/watchlist.html", {
-        "listings" : request.user.watchlist.all(),
-        "title" : "Watchlist"
+    return render(request, "auctions/index.html", {
+        "listings": request.user.watchlist.all(),
+        "title": "Watchlist"
     })
+
+
+@login_required(login_url='/login')
+def category_view(request, category):
+    context = {
+        'listings': Listing.objects.filter(
+            category = category,
+            closed = False,
+            date_end__gte = datetime.now(),
+            ),
+        'title': category,
+    }
+    return render(request, "auctions/index.html", context)
+
+
+def category_list(request):
+    context = {
+        'categories': Listing.objects.values_list('category', flat=True).distinct(),
+    }
+    return render(request, "auctions/category_list.html", context)
