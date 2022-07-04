@@ -3,84 +3,86 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-<article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px; padding-left: auto; padding-right: auto;">
-    <div class="article-metadata" style="border-bottom: none; margin-left: auto; margin-right: auto;">
-        <small class="text-muted">{{ object.date_posted|date:"d F, Y" }}</small>
-        <div>
-            <h2 class="article-title">{{ object.title }}</h2>
-            <img src="{{ object.image_url }}" alt="Listing Image" width="500" height="600">
-            <p class="article-content">{{ object.description }}</p>
-            <p><a class="article-content" href="{% url 'category' object.category %}">{{ object.category }}</a></p>
-            
-            
-            {% if listing.bid.last.bid == none %}
-                $ {{ object.startingbid }}
+
+    <article class="media content-section" style="background-color: #8f8f8f; border-radius: 25px; padding-left: auto; padding-right: auto;">
+        <div class="article-metadata">
+            <small class="text-muted" style="text-align: left;">{{ object.date_posted|date:"d F, Y" }}</small>
+            {% if closed %}
+                <div><b>This auction has ended</b></div>
             {% else %}
-                $ {{ listing.bid.last.bid }}
+                <small style="text-align: right;">Auction ends at: {{ object.date_end }}</small>
             {% endif %}
-
             <div>
-                {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
-                    <form action="{% url 'listing-watchlist' object.pk %}" method="POST">
-                        {% csrf_token %}
-                        {% if listing in request.user.watchlist.all %}
-                            <input type="submit" class="btn btn-danger" value="Remove from watchlist">
-                            <input type="hidden" name="watchlist" value="True">
-                        {% else %}
-                            <input type="submit" class="btn btn-success" value="Add to watchlist">
-                            <input type="hidden" name="watchlist" value="False">
-                        {% endif %}
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                    </form>
+                <h2 class="article-title">{{ object.title }}</h2>
+                <img src="{{ object.image_url }}" alt="Listing Image" width="500" height="600">
+                <p class="article-content">{{ object.description }}</p>
+                <p><a class="article-content" href="{% url 'category' object.category %}">{{ object.category }}</a></p>
+                
+                
+                {% if listing.bid.last.bid == none %}
+                    $ {{ object.startingbid }}
+                {% else %}
+                    $ {{ listing.bid.last.bid }}
                 {% endif %}
-            </div>
 
-            <div>
-                {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
-                    <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
-                        {% csrf_token %}
-                        <fieldset class="form-group">
-                            {{ bid_form|crispy }}
-                        </fieldset>
-                        <div class="form-group" style="padding-left: 10px;">
-                            <input class="btn btn-primary" type="submit" value="Place Bid"/>
-                        </div>
-                    </form>
-                {% endif %}
-            </div>
+                <div>
+                    {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
+                        <form action="{% url 'listing-watchlist' object.pk %}" method="POST">
+                            {% csrf_token %}
+                            {% if listing in request.user.watchlist.all %}
+                                <input type="submit" class="btn btn-danger" value="Remove from watchlist">
+                                <input type="hidden" name="watchlist" value="True">
+                            {% else %}
+                                <input type="submit" class="btn btn-success" value="Add to watchlist">
+                                <input type="hidden" name="watchlist" value="False">
+                            {% endif %}
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                        </form>
+                    {% endif %}
+                </div>
 
-            <div>
-                {% for comment in comments %}
-                        <div class="article-metadata" style="border-bottom: none;">
-                            <p>{{ comment.user }}</p>
-                            <small class="text-muted">{{ comment.time|date:"d F, Y" }}</small>
-                            <div>
-                                <p class="article-content">{{ comment.comment }}</p>
+                <div>
+                    {% if request.user.is_authenticated and not ended and user.id != listing.author.id %}
+                        <form method="POST" action="{% url 'listing-bid' object.pk %}" class="form-inline">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                {{ bid_form|crispy }}
+                            </fieldset>
+                            <div class="form-group" style="padding-left: 10px;">
+                                <input class="btn btn-primary" type="submit" value="Place Bid"/>
                             </div>
-                        </div>
-                {% endfor %}
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% for comment in comments %}
+                            <div class="article-metadata" style="border-bottom: none;">
+                                <p>{{ comment.user }}</p>
+                                <small class="text-muted">{{ comment.time|date:"d F, Y" }}</small>
+                                <div>
+                                    <p class="article-content">{{ comment.comment }}</p>
+                                </div>
+                            </div>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {% if request.user.is_authenticated and not ended %}
+                        <form method="POST" action="{% url 'listing-comment' object.pk %}" class="form-inline">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                {{ comment_form|crispy }}
+                            </fieldset>
+                            <div class="form-group" style="padding-left: 10px;">
+                                <input class="btn btn-primary" type="submit" value="Comment"/>
+                            </div>
+                        </form>
+                        </form>
+                    {% endif %}
+                </div>
             </div>
-
-            <div>
-                {% if request.user.is_authenticated and not ended %}
-                    <form method="POST" action="{% url 'listing-comment' object.pk %}" class="form-inline">
-                        {% csrf_token %}
-                        <fieldset class="form-group">
-                            {{ comment_form|crispy }}
-                        </fieldset>
-                        <div class="form-group" style="padding-left: 10px;">
-                            <input class="btn btn-primary" type="submit" value="Comment"/>
-                        </div>
-                    </form>
-                    </form>
-                {% endif %}
-            </div>
-
-
-            
-
         </div>
-    </div>
-</article>
+    </article>
 {% endblock %}

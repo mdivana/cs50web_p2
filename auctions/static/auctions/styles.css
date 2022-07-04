@@ -1,10 +1,17 @@
 body {
     padding: 10px;
-}
+  }
 
-article {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: auto;
-    padding-right: auto;
-}
+@media screen and (max-width: 800px) {
+    .leftcolumn, .rightcolumn {   
+      width: 100%;
+      padding: 0;
+    }
+  }
+
+.card {
+    background-color: #9f9f9f;
+    border-radius: 25px;
+    padding: 20px;
+    margin-top: 20px;
+ }
