@@ -5,12 +5,12 @@
     <h2>{{ title }}</h2>
 
     {% for listing in listings %}
-        <div>
+        <div style="margin: 10px;">
             <div class="card">
                 <h2><a class="article-title" href="{% url 'listing-detail' listing.id %}">{{ listing.title }}</a></h2>
                 <h4 class="mr-2 author_title">{{ listing.author }}</h4>
                 <h5>{{ listing.date_posted|date:"d F, Y" }}</h5>
-                <div><img class="article-img" src="{{ listing.image_url }}" style="border-radius: 5px;"></div>
+                <div style="margin-top: 10px; margin-bottom: 10px "><img class="article-img" src="{{ listing.image_url }}" style="border-radius: 5px;"></div>
                 {% if listing.bid.last.bid == none %}
                     <h4>$ {{ object.startingbid }}</h4>
                 {% else %}
