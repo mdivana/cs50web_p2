@@ -69,7 +69,6 @@ class Listing(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     startingbid = models.IntegerField(default=0)
     image_url = models.URLField(verbose_name="Image URL")
-    availibility = models.BooleanField(default=True)
     category = models.CharField(max_length=30, choices=category_list)
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchlist")
 
@@ -83,8 +82,8 @@ class Listing(models.Model):
         self.date_end = self.date_posted + timedelta(days=self.duration)
         super().save(*args, **kwargs)
 
-    def ended(self):
-        if self.closed or self.end_time < timezone.now():
+    def is_finished(self):
+        if self.closed or self.date_end < timezone.now():
             return True
         else:
             return False

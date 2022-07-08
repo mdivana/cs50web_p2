@@ -173,3 +173,12 @@ def category_list(request):
         'categories': Listing.objects.values_list('category', flat=True).distinct(),
     }
     return render(request, "auctions/category_list.html", context)
+
+
+def listing_close(request, pk):
+    if request.method == "POST":
+        listing = Listing.objects.get(id=pk)
+        if request.user == listing.author:
+            listing.closed = True
+            listing.save()
+    return HttpResponseRedirect(reverse('listing-detail', kwargs={'pk': pk}))

@@ -12,7 +12,7 @@
                 <h5>{{ listing.date_posted|date:"d F, Y" }}</h5>
                 <div style="margin-top: 10px; margin-bottom: 10px "><img class="article-img" src="{{ listing.image_url }}" style="border-radius: 5px;"></div>
                 {% if listing.bid.last.bid == none %}
-                    <h4>$ {{ object.startingbid }}</h4>
+                    <h4>$ {{ listing.startingbid }}</h4>
                 {% else %}
                     <h4>$ {{ listing.bid.last.bid }}</h4>
                 {% endif %}
